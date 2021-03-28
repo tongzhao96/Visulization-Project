@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+}
+
+/* DIV HEADER */
+.title {
+    background-color: #f7f7f7;
+    font-family: "Helvetica";
+    height: 150px;
+    width: 100%;
+    margin-bottom: 0;
+    padding-top: 0;
+  }
+
+.title h1 {
+    text-align: center;
+    padding-top: 30px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.title h3 {
+    text-align: center;
+    margin-top: 0;
+}
+
+#svgIconLegend {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* SVG STYLE */
+/* .mainSVG {
+    display: inline-block;
+    margin: auto;
+} */
+
+.svg-container {
+  display: flex;
+  align-items: center;
+}
+
+.legend-container {
+    display: flex;
+    align-items: center;
+  }
+
+#mainSvg, #secondSvg, #legendSvg {
+  margin: 0 auto;
+  display: block;
+  
+}
+
+/* GRIDLINES STYLE */
+.gridlines line {
+    stroke: #bbb;
+    stroke-width: 0.75px;
+  }
+
+
+.gridlines .domain {
+stroke: none;
+}
+
+/* AXIS STYLE */
+.axis line {
+    stroke: #bbb;
+    stroke-width: 0.75px;
+}
+
+.axis .domain {
+    stroke: none;
+}
+
+.axislabel {
+    font-weight: bold;
+    text-anchor: middle;
+    font-family: 'Helvetica';
+}
+
+/* LEGEND */
+text.legend {
+    font-family: 'Helvetica';
+    font-size: 13;
+    font-weight: bolder;
+}

@@ -1,0 +1,682 @@
+<html>
+<head>
+    <title>INFO 5100: Project 1</title>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+<body>
+  <div class = "title">
+    <h1>Revolutions and Emissions</h1> <br>
+    <h3>Aspen Russell & Tong Zhao</h3>
+  </div>
+  <div class = "legend-container">
+    <h4>Icon Description</h4>
+    <svg  width= "auto" height = "100" style = "border:1px black solid">
+      
+      <text  y ="20">
+        <tspan x= "5%" dy="10" style="font-size: 13px; font-weight: bold; font-family: Helvetica">First Industrial Revolution (early 1800s~1870)</tspan>
+        <tspan x= "5%"dy="25" style="font-size: 11px; font-family: Helvetica">Fueled by the game-changing use of steam power, the Industrial</tspan>
+        <tspan x= "5%"dy="27" style="font-size: 11px; font-family: Helvetica">Revolution began in Britain and spread to the rest of the world</tspan></text>
+      <image  href="./1.png" height="50" width="50" x="0%" y ="30"/> -->
+  
+      <text  y ="20">
+        <tspan x= "30%" dy="10" style="font-size: 13px; font-weight: bold; font-family: Helvetica">Second Industrial Revolution (1870~1914)</tspan>
+        <tspan x= "30%" dy="25" style="font-size: 11px; font-family: Helvetica">Advancements in manufacturing and production technology enabled the widespread</tspan>
+        <tspan x= "30%" dy="27" style="font-size: 11px; font-family: Helvetica">adoption of technological systems such as telegraph and railroad networks</tspan></text>
+      <image href="./2.png" height="50" width="50" x="25%" y ="30"/> 
+  
+      <text  y ="20">
+        <tspan x= "60%" dy="10" style="font-size: 13px; font-weight: bold; font-family: Helvetica">Third Industrial Revolution (1914~1970)</tspan>
+        <tspan x= "60%" dy="25" style="font-size: 11px; font-family: Helvetica">Characterized by the spread of automation and digitization through</tspan>
+        <tspan x= "60%" dy="27" style="font-size: 11px; font-family: Helvetica">the use of electronics and computers, the invention of the Internet</tspan></text>
+      <image href="./3.png" height="50" width="50" x="55%" y ="30"/>
+  
+      <text  y ="20">
+        <tspan x= "84%" dy="10" style="font-size: 13px; font-weight: bold; font-family: Helvetica">Fourth Industrial Revolution(1970~current)</tspan>
+        <tspan x= "84%" dy="25" style="font-size: 11px; font-family: Helvetica">Supercomputing, Intelligent robots, Self-driving cars...</tspan>
+        <tspan x= "84%" dy="27" style="font-size: 11px; font-family: Helvetica">It is what's happening right now</tspan></text>
+      <image href="./4.png" height="50" width="50" x="80%" y ="30"/> -->
+    </svg>
+  </div>
+
+  <div class = "svg-container">
+
+  <svg id = "mainSvg" width = "1000" height = "800" >
+
+    <text x="82" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1840~1870</text>
+    <image href="./1.png" height="50" width="50" x="80" y ="325"/>
+
+    <text x="237" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1870~1914</text>
+    <image href="./2.png" height="50" width="50" x="235" y ="325"/> 
+
+    <text x="517" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1914~1970</text>
+    <image href="./3.png" height="50" width="50" x="515" y ="325"/>
+
+    <text x="822" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1970~2019</text>
+    <image href="./4.png" height="50" width="50" x="820" y ="325"/>
+    
+    </svg>
+   </div>
+
+    <!-- <p style="margin-left: auto; margin-right: auto;">Graph 2</p> -->
+    <div class = "svg-container" >
+      <svg id = "secondSvg" width = "1000" height = "800">
+        <text x="82" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1840~1870</text>
+        <image href="./1.png" height="50" width="50" x="80" y ="325"/>
+  
+        <text x="237" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1870~1914</text>
+        <image href="./2.png" height="50" width="50" x="235" y ="325"/> 
+  
+        <text x="517" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1914~1970</text>
+        <image href="./3.png" height="50" width="50" x="515" y ="325"/>
+  
+        <text x="822" y ="323" style="font-size: 10px; font-weight: bold; font-family: Helvetica" >1970~2019</text>
+        <image href="./4.png" height="50" width="50" x="820" y ="325"/>
+      </svg>
+    </div>
+
+
+    <script>
+        //Selecting the scatterplot svg and storing it as an object
+        const svg = d3.select( "svg#mainSvg" );
+
+        //Grabbing h/w of the SVG we selected above
+        const width = svg.attr( "width" );
+        const height = svg.attr( "height" );
+
+        //Creating a margin to make space for labels
+        const margin = { "top": 20, "right": 20, "bottom": 80, "left":80};
+
+        //chartArea width and height
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        //annotations is a group added to the main svg
+        let annotations = svg.append( "g" ).attr( "id", "annotations" );
+
+        //ChartArea is the group that we will store the svg after removing the margins space
+        //We "id" this points because the graphed points will live in this chartArea
+        let chartArea = svg.append( "g" )
+                           .attr( "id", "points" )
+                           .attr( "transform", "translate("+margin.left+","+margin.top+")" );
+
+        function co_scientific(d){
+          var f = d3.format(".1f");
+          return f(d)
+        }
+        // function lighten(color) {
+        //   let hclColor = d3.hcl(color);
+        //   let luma = Math.min(130, hclColor.l + 30);
+        //   return d3.rgb(d3.hcl(hclColor.h, hclColor.c, luma));
+        // }
+        // annotations.append("text")
+        //           .attr("x", width / 2)
+        //           .attr("y", (margin.top - 5))
+        //           .attr("text-anchor", "middle")
+        //           .attr("id", "label")
+        //           .style("font-size", "16px")
+
+        // chartArea.append("text")
+        //          .attr("text-anchor", "middle")
+        //          .attr("id", "yearlabel")
+        //          .style("font-size", "16px")
+        //Creating our promise and loading in the dataset
+
+        //PROMISE -------------------------------------------------------------------------
+        d3.json( "/ghg_aus.json").then( (data) => {
+            //data = JSON.parse(JSON.stringify(data))
+            data = data["data"]
+            
+            //scientific round
+            data.forEach( d => {
+              d["co2"] = co_scientific(d["co2"])
+              //console.log(d["co2"])
+            })
+            const yearExtent = d3.extent(data, d => d["year"]);
+            const popExtent = d3.extent(data, d => d["population"])
+
+            const popScale = d3.scaleLinear()
+                               .domain( popExtent )
+                               .range( [ chartHeight-10, 30 ] );
+
+            const yearScale = d3.scaleLinear()
+                                .domain( yearExtent )
+                                .range( [ 0, chartWidth ] );
+
+            const co2Extent = d3.extent(data, d => Number(d["co2"]));
+
+            // "cement_co2": 
+            // "coal_co2": 
+            // "flaring_co2":
+            // "gas_co2": 
+            // "oil_co2": 
+            // "other_industry_co2": 
+
+            const co2Scale = d3.scaleLog()
+                               .domain( co2Extent )
+                               .range( [ chartHeight-10, 0 ] );
+            const co2Scale2 = d3.scaleLog()
+                                .domain( co2Extent );
+            const yearData = data[ "year" ];
+            const typeScale = d3.scaleBand()
+                                .domain( ["cement_co2",
+                                          "coal_co2",
+                                          "flaring_co2",
+                                          "gas_co2",
+                                          "oil_co2",
+                                          "other_industry_co2"] )
+                                .range([0,chartWidth])
+                                .padding(0.05);
+           
+            let leftAxis = d3.axisLeft( co2Scale )
+                             .ticks( 10 )
+                             .tickSize( 0 )
+                             .tickFormat(d3.format( ".1f" ) );
+            let bottomAxis = d3.axisBottom(yearScale)
+                               .ticks( 20 )
+                               .tickSize( 0 )
+                               .tickFormat(d3.format( ".0f" ) );
+
+            let leftGridlines = d3.axisLeft(co2Scale)
+                                  .tickSize(-chartWidth-10)
+                                  .tickFormat("");
+            //let bottomGridlines = d3.axisBottom(yearScale).tickSize(-chartHeight-10).tickFormat("")
+            annotations.append("g").attr("class","y axis")
+                                   .attr("transform",`translate( ${ margin.left-20 }, ${ margin.top } )` )
+                                   .call(leftAxis);
+
+            annotations.append("g").attr("class","x axis")
+                                   .attr("transform", `translate( ${ margin.left }, ${ chartHeight+margin.top } )` )
+                                   .call(bottomAxis);
+
+            annotations.append("g").attr("class","y gridlines")
+                                   .attr("transform", `translate( ${ margin.left-10 }, ${ margin.top } )` )
+                                   .call(leftGridlines);
+
+            //AXIS LABELS ----------------------------
+            svg.append( "text" )
+               .attr( "class", "axislabel" )
+               .attr( "x", ( chartWidth/2 + 80 ) )
+               .attr( "y", chartHeight+60 )
+               .text( "Year" );
+            
+            svg.append( "text" )
+               .attr("class", "axislabel" )
+               .attr( "x", -chartHeight/2 )
+               .attr( "y", 25 )
+               .attr( "transform", "rotate(-90)" )
+               .text( "Co2 Emissions in Tonnes" );
+
+            // chartArea.append("line")
+            //          .attr("class",'first')
+            //          .attr("x",yearScale(1860))
+            //          .attr("y",0)
+            //          .attr("width",yearScale(1870-1860))
+            //          .attr("height",chartHeight)
+            //          .style("fill","red")
+            //          .style("stroke","pink")
+
+
+            // let lines = chartArea.selectAll("line.datapoint").data(data)
+            //                       .join("line").attr("class","lines")
+            //                       .attr("class","datapoint")
+            //                       .attr("x1",d => yearScale(d['year']) )
+            //                       .attr("x2",d => yearScale(d['year']) )
+            //                       .attr("y1", chartHeight )
+            //                       .attr("y2",d => co2Scale(d['co2']))
+            //                       .style("stroke-width",5)
+            //                       .attr("opacity",0)
+            //                       .style("stroke","darkblue")
+                                  // .on("mouseover",function(evt){
+                                  //   d3.select(this)
+                                  //     .transition().duration(200)
+                                  //     .attr("opacity",1)
+                                  //   let current = d3.select(this)
+                                  //   d3.select("#label").text("CO^2:" + d3.select(this).datum()["co2"])
+                                  //   d3.select("#yearlabel").text(d3.select(this).datum()["year"]).attr("x",d => yearScale( d3.select(this).datum()["year"]))
+                                  //                                                                .attr("y",d => {let xpos = yearScale( d3.select(this).datum()["year"])
+                                  //                                                                if (xpos >= chartWidth/2) {
+                                  //                                                                  return co2Scale( d3.select(this).datum()["co2"]) + 50
+                                  //                                                                }
+                                  //                                                                else {
+                                  //                                                                  return co2Scale( d3.select(this).datum()["co2"]) - 50
+                                  //                                                                }
+                                  // })
+                                                                                                 
+                                  //   //console.log(d3.select(this).datum()["gdp"])
+                                                      
+                                  // })
+                                  // .on("mouseout", function() {
+                                  //   d3.select(this)
+                                  //     .transition().duration(200)
+                                  //     .attr("opacity",0)
+                                  //   d3.select("#label").text("")
+                                  //   d3.select("#yearlabel").text("")
+                                  // })
+            var lineGen = d3.line().x( d=> yearScale( d["year"] ) )
+                                   .y( d=> co2Scale( d["co2"] ) )
+                                   .curve( d3.curveMonotoneX );
+            chartArea.append("path")
+                 .datum(data)
+                 .attr("class","newline")
+                 .attr("fill","none")
+                 .attr("stroke", "DarkKhaki" )
+                 .attr( "stroke-width", 3 )
+                 .attr( "d",lineGen )
+            // chartArea.selectAll("circle").data(data)
+            //                              .join("circle")
+            //                              .attr("r", 3 )
+            //                              .attr("fill",d => d3.interpolateOranges(co2Scale2(d["co2"])))
+            //                              .attr("cx", d=> yearScale(d["year"]))
+            //                              .attr("cy", d=> co2Scale(d["co2"]))
+                                        //  .on("mousemove",function(evt){
+                                        //    d3.select(this).transition().duration(200)
+                                        //                   .attr("r",8)
+                                        //                   .style("stroke","black")
+                                                          
+                                        //  })
+                                        //  .on("mouseout",function(){
+                                        //    d3.select(this).transition().duration(200)
+                                        //                   .attr("r",3)
+                                        //                   .style("stroke","none")
+                                        //  })
+            chartArea.append("line")
+                      .attr("class","firstR")
+                      .attr("transform",'translate(${margin.left-10},${margin.top})')
+                      .attr("x1", yearScale(1870))
+                      .attr("x2", yearScale(1870))
+                      .attr("y1", 0)
+                      .attr("y2", chartHeight)
+                      .style("stroke","red")
+                      .style("stroke-dasharray","8");
+
+            chartArea.append("line")
+                      .attr("class","secondR")
+                      .attr("transform",'translate(${margin.left-10},${margin.top})')
+                      .attr("x1", yearScale(1914))
+                      .attr("x2", yearScale(1914))
+                      .attr("y1", 0)
+                      .attr("y2", chartHeight)
+                      .style("stroke","red")
+                      .style("stroke-dasharray","8");
+
+            chartArea.append("line").attr("class","thirdR")
+                      .attr("transform",'translate(${margin.left-10},${margin.top})')
+                      .attr("x1", yearScale(1970))
+                      .attr("x2", yearScale(1970))
+                      .attr("y1", 0)
+                      .attr("y2", chartHeight)
+                      .style("stroke","red")
+                      .style("stroke-dasharray","8");
+
+            //comment out interactive parts
+            // let mouseGroup = chartArea.append("g")
+            // let newlabel = mouseGroup.append("text").attr("id","newlabel")
+            //                                         .attr("visibility","hidden")
+            // let xMarker = mouseGroup.append("line")
+            //                         .attr("id","xMarkers")
+            //                         .attr("fill","blue")
+            //                         .attr("stroke","black")
+            //                         .attr("stroke-width",1)
+            //                         .attr("y1",0)
+            //                         .attr("y2",chartHeight)
+            //                         .attr("visibility","hidden")
+            // let activeRegion = mouseGroup.append("rect")
+            //                             .attr("id","activeRegion")
+            //                             .attr("width",chartWidth)
+            //                             .attr("height",chartHeight)
+            //                             .attr("fill","none")
+            //                             .attr("pointer-events","all");
+            // let findDate = d3.bisector( d=> d.year).right;
+
+            // activeRegion.on("mouseover",function(){
+            //   xMarker.attr("visibility","")
+            //   newlabel.attr("visibility","")
+            // })
+
+            // activeRegion.on("mouseout",function(){
+            //   xMarker.attr("visibility","hidden")
+            //   newlabel.attr("visibility","hidden")
+            // })
+
+            // activeRegion.on("mousemove",function(evt){
+            //   let location = d3.pointer(evt)
+            //   let x = location[0];
+
+            //   let xDate = yearScale.invert(x)
+              
+            //   let index = findDate(data,xDate)
+            //   if (index == 160){
+            //     index = 159
+            //   }
+            //   let d = data[index]
+              
+
+            //   let xPos = yearScale(d["year"])
+              
+            //   let yPos = co2Scale(d["co2"])
+            //   xMarker.attr("x1", xPos).attr("x2",xPos)
+            //   let txt = d["co2"]
+            //   //console.log(txt,xPos,yPos)
+            //   newlabel.text(txt)
+            //   if (xPos < chartWidth / 2.0) { 
+            //       newlabel.attr("x",xPos+4).attr("y",100).attr("text-anchor","start");
+            //     }
+            //     else { 
+            //       newlabel.attr("x",xPos-4).attr("y",chartHeight-100).attr("text-anchor","end"); 
+            //     }
+            // })
+
+            // function updateBars(yearKey) {
+            //   const data = yearData[yearKey]
+            // }
+            // const allKeys = Object.keys(yearData).sort();
+            // console.log(allKeys)
+            // allKeys.forEach( d=> {
+            //   d3.select("div#button-bar")
+            //     .append("button")
+            //     .text(d)
+            //     .on("click", function(){
+            //       updateBars(d)
+            //     })
+
+            // })
+            
+            
+            
+            
+
+          });
+    </script>
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+        <script>
+          //Selecting the scatterplot svg and storing it as an object
+          const svg2 = d3.select( "svg#secondSvg" );
+  
+          //Grabbing h/w of the SVG we selected above
+          const width2 = svg2.attr( "width" );
+          const height2 = svg2.attr( "height" );
+  
+          //Creating a margin to make space for labels
+          const margin2 = { "top": 20, "right": 20, "bottom": 80, "left": 80};
+  
+          //chartArea width and height
+          const chartWidth2 = width2 - margin2.left - margin2.right;
+          const chartHeight2 = height2 - margin2.top - margin2.bottom;
+  
+          //annotations is a group added to the main svg
+          let annotations2 = svg2.append( "g" ).attr( "id", "annotations2" );
+  
+          //ChartArea is the group that we will store the svg after removing the margins space
+          //We "id" this points because the graphed points will live in this chartArea
+          let chartArea2 = svg2.append( "g" )
+                               .attr( "id", "points2" )
+                               .attr( "transform", "translate("+margin2.left+","+margin2.top+")" );
+
+          function co_scientific(d){
+            var f = d3.format(".1f");
+            return f(d)
+          }
+
+          annotations2.append("text")
+                      .attr("x", width2 / 2)
+                      .attr("y", (margin2.top - 5))
+                      .attr("text-anchor", "middle")
+                      .style("font-size", "16px");
+  
+          chartArea2.append("text")
+                    .attr("text-anchor", "middle")
+                    .attr("id", "area")
+                    .style("font-size", "16px");
+
+          //Creating our promise and loading in the dataset
+          d3.json( "/ghg_aus.json").then( (data) => {
+              //data = JSON.parse(JSON.stringify(data))
+              data = data["data"]
+              
+              //scientific round
+              data.forEach( d => {
+                d["co2"] = co_scientific(d["co2"])
+                //console.log(d["co2"])
+              });
+
+              const yearExtent = d3.extent( data, d => d[ "year" ] );
+              const popExtent = d3.extent( data, d => d[ "population" ] );
+              const popScale = d3.scaleLinear()
+                                 .domain( popExtent )
+                                 .range( [ chartHeight2-10, 30 ] );
+              const yearScale = d3.scaleLinear()
+                                  .domain( yearExtent )
+                                  .range( [ 0, chartWidth2 ] );
+              const co2Extent = d3.extent( data, d => Number( d[ "co2" ] ) );
+
+              // "cement_co2": 
+              // "coal_co2": 
+              // "flaring_co2":
+              // "gas_co2": 
+              // "oil_co2": 
+              // "other_industry_co2": 
+
+              const co2Scale = d3.scaleLog()
+                                 .domain( co2Extent )
+                                 .range( [ chartHeight2-15, 0 ] );
+              const co2Scale2 = d3.scaleLog()
+                                  .domain( co2Extent );
+              const yearData = data[ "year" ];
+              const typeScale = d3.scaleBand()
+                                  .domain(["cement_co2",
+                                          "coal_co2",
+                                          "flaring_co2",
+                                          "gas_co2",
+                                          "oil_co2",
+                                          "other_industry_co2"])
+                                  .range([0,chartWidth2])
+                                  .padding(0.05);
+              let leftAxis = d3.axisLeft(co2Scale)
+                               .ticks(10)
+                               .tickSize(0)
+                               .tickFormat(d3.format(".1f") );
+              let bottomAxis = d3.axisBottom(yearScale)
+                                 .ticks(20)
+                                 .tickSize(0)
+                                 .tickFormat(d3.format(".0f") );
+              let leftGridlines = d3.axisLeft(co2Scale)
+                                    .tickSize(-chartWidth2-10)
+                                    .tickFormat("");
+
+              //let bottomGridlines = d3.axisBottom(yearScale).tickSize(-chartHeight-10).tickFormat("")
+              annotations2.append("g").attr("class","y axis").attr("transform","translate("+(margin2.left-10)+","+margin2.top+")").call(leftAxis)
+              annotations2.append("g").attr("class","x axis")
+                                      .attr("transform", "translate(" + margin2.left + "," + (chartHeight2 + margin2.top) + ")")
+                                      .call(bottomAxis);
+              annotations2.append("g").attr("class","y gridlines")
+                                      .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+                                      .call(leftGridlines);
+              //AXIS LABELS ----------------------------
+              svg2.append( "text" )
+                .attr( "class", "axislabel" )
+                .attr( "x", ( chartWidth/2 + 80 ) )
+                .attr( "y", chartHeight+60 )
+                .text( "Year" );
+              
+              svg2.append( "text" )
+                .attr("class", "axislabel" )
+                .attr( "x", -chartHeight/2 )
+                .attr( "y", 25 )
+                .attr( "transform", "rotate(-90)" )
+                .text( "Co2 Emissions in Tonnes" );
+
+              // let lines = chartArea2.selectAll( "line.datapoint" ).data( data )
+              //                       .join( "line" ).attr( "class", "lines" )  
+              //                       .attr( "class", "datapoint" )
+              //                       .attr( "x1",d => yearScale( d[ 'year' ] ) )
+              //                       .attr( "x2",d => yearScale( d[ 'year' ] ) )
+              //                       .attr( "y1", chartHeight2 )
+              //                       .attr( "y2",d => co2Scale( d[ 'co2' ] ) )
+              //                       .style( "stroke-width", 5 )
+              //                       .attr( "opacity", 0 )
+              //                       .style( "stroke", "darkblue" );
+                                    
+              var lineGen_coal = d3.line().x( d=> yearScale( d[ "year" ] ) )
+                                          .y( d=> co2Scale( d[ "coal_co2" ] ) )
+                                          .curve( d3.curveMonotoneX );
+
+              var lineGen_original = d3.line().x( d=> yearScale( d[ "year" ] ) )
+                                              .y( d=> co2Scale( d[ "co2" ] ) )
+                                              .curve( d3.curveMonotoneX );
+
+              // var lineGen_oil =  d3.line().x( d=> {
+                                            
+              //                               if (d["year"]>=1950) {
+                                               
+              //                                  return yearScale( d[ "year" ] )
+              //                                }
+              //                                else {
+                                              
+              //                                  return 0
+              //                                }} )
+              //                             .y( d=> {if (d["year"]>=1950) {
+              //                                  return  co2Scale( d[ "co2" ] )
+              //                                }
+              //                                else {
+              //                                  return 0
+              //                                }  })
+              //                             .curve( d3.curveMonotoneX );
+
+              chartArea2.append("path")
+                   .datum(data)
+                   .attr( "class", "coalline" )
+                   .attr( "fill", "none" )
+                   .attr( "stroke", "grey" )
+                   .attr( "stroke-width", 2 )
+                   .attr( "d", lineGen_coal );
+              // chartArea2.selectAll("#coalcircle").data(data).attr("class","coalcircle")
+              //                              .join("circle")
+              //                              .attr("r",3)
+              //                              .attr("fill",'grey')
+              //                              .attr("cx", d=> yearScale(d["year"]))
+              //                              .attr("cy", d=> co2Scale(d["coal_co2"]))
+
+              chartArea2.append( "path" )
+                   .datum( data )
+                   .attr( "class", "orline" )
+                   .attr( "fill", "none" )
+                   .attr( "stroke", "orange" )
+                   .attr( "opacity", 1)
+                   .attr( "stroke-width", 2)
+                   .attr( "d", lineGen_original );
+              // chartArea2.selectAll("#orcircle").data(data).attr("class","orcircle")
+              //                              .join("circle")
+              //                              .attr("r",3)
+              //                              .attr("fill","orange")
+              //                              .attr("cx", d=> yearScale(d["year"]))
+              //                              .attr("cy", d=> co2Scale(d["co2"]))
+              // chartArea2.append( "path" )
+              //      .datum( data )
+              //      .attr( "class", "oilline" )
+              //      .attr( "fill", "none" )
+              //      .attr( "stroke", "green" )
+              //      .attr( "stroke-width", 2 )
+              //      .attr( "d", d=>{lineGen_oil(d) });
+                
+              // chartArea2.selectAll( "#oilcircle" ).data( data ).attr( "class", "oilcircle" )
+              //                              .join( "circle" )
+              //                              .attr( "r", 3 )
+              //                              .attr( "fill", 'green' )
+              //                              .attr( "cx", d=> yearScale( d[ "year" ] ) )
+              //                              .attr( "cy", d=> co2Scale( d[ "oil_co2" ] ) )
+              //                              .attr("visibility",d=>{
+              //                                if (d["year"]<=1950) {
+              //                                  return "hidden"
+              //                                }
+              //                                else {
+              //                                  return ""
+              //                                }
+              //                              });
+
+              chartArea2.append("line")
+                        .attr( "class", "firstR" )
+                        .attr("transform",'translate(${margin.left-10},${margin.top})')
+                        .attr("x1", yearScale( 1870 ) )
+                        .attr("x2", yearScale( 1870 ) )
+                        .attr("y1", 0 )
+                        .attr("y2", chartHeight2 )
+                        .style("stroke","red")
+                        .style("stroke-dasharray","8");
+  
+              chartArea2.append("line")
+                        .attr( "class", "secondR" )
+                        .attr( "transform",'translate(${margin.left-10},${margin.top})')
+                        .attr( "x1", yearScale( 1914 ) )
+                        .attr( "x2", yearScale( 1914 ) )
+                        .attr( "y1", 0 )
+                        .attr( "y2", chartHeight2)
+                        .style( "stroke", "red" )
+                        .style( "stroke-dasharray", "8" );
+  
+              chartArea2.append("line").attr("class","thirdR")
+                        .attr("transform",'translate(${margin.left-10},${margin.top})')
+                        .attr("x1", yearScale(1970))
+                        .attr("x2", yearScale(1970))
+                        .attr("y1", 0)
+                        .attr("y2", chartHeight2)
+                        .style("stroke","red")
+                        .style("stroke-dasharray","8");
+
+                        
+              //CHART LEGEND
+              //CO2
+              svg2.append("circle")
+                        .attr("cx",( chartWidth/2 + 143 ) )
+                        .attr("cy",chartHeight + 56 )
+                        .attr("r", 6 )
+                        .style("fill", "orange");
+              svg2.append("text")
+                        .attr("x", ( chartWidth/2 + 153 ) )
+                        .attr("y", chartHeight+60 )
+                        .text("Total CO^2")
+                        .attr( "class", "legend" )
+                        .attr( "font-weight","bold");
+              //COAL                             
+              svg2.append( "circle" )
+                        .attr( "cx", ( chartWidth/2 + 283 ) )
+                        .attr( "cy", chartHeight+56 )
+                        .attr( "r", 6 )
+                        .style( "fill", "grey" );
+              svg2.append( "text" )
+                        .attr( "x", ( chartWidth/2 + 293 ) )
+                        .attr( "y", chartHeight+60 )
+                        .text( "Coal CO^2")
+                        .attr( "class", "legend" )
+                        .attr( "font-weight", "bold" );
+
+              // //OIL                            
+              // svg2.append( "circle" )
+              //           .attr( "cx", ( chartWidth/2 + 423 ) )
+              //           .attr( "cy", chartHeight+56 )
+              //           .attr( "r", 6 )
+              //           .style( "fill", "green" );
+              // svg2.append( "text") 
+              //           .attr( "class", "legend" )
+              //           .attr( "x", ( chartWidth/2 + 433 ) )
+              //           .attr( "y", chartHeight+60 )
+              //           .text( "Oil CO^2" )
+              //           .attr( "font-weight","bold" );
+
+            });
+      </script>
+      <div>
+        <blockquote>
+          <p>Reference</p>
+          <footer>
+              Icons from <cite><a href="https://www.sohu.com/a/398907004_760770">https://www.sohu.com/a/398907004_760770</a></cite> by Zhuoyoushidu (2020-05-31 21:58).
+          </footer>
+
+          <footer>
+            Description of Industrial Revolutions <cite><a href="https://www.britannica.com/event/Industrial-Revolution">https://www.britannica.com/event/Industrial-Revolution</a></cite> www.britannica.com.
+          </footer>
+      </blockquote>
+      </div>
+
+</body>
+</html>
