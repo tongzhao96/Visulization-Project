@@ -1,6 +1,7 @@
 # Visulization-Project
 Interactive Visualization of Co2
 Data
+                                                                                                    
 Our dataset is a subset of data from Our World in Data, which is an organization dedicated to
 centralizing data and research on global issues of poverty, disease, climate change, and hunger.
 The dataset we are working with in particular is the CO2 and Greenhouse Gas Emissions
